@@ -50,10 +50,6 @@ By pointing an `<img>` tag in the email to a remote server, we bypass these rest
 - Secret announcements or easter eggs after sending  
 - Fake "editable email" demos 😎
 
-## 📸 Screenshot
-
-![Dynamic Email Example](https://yourserver.com/example-screenshot.png)
-
 ---
 
 Proudly built by someone who knows how to get around the rules — creatively and ethically.
