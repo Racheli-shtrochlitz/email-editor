@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>עריכת מייל חי</title>
+</head>
+<body dir="rtl" style="font-family:sans-serif; max-width: 600px; margin: auto; padding: 20px;">
+  <h2>שלח / ערוך הודעה</h2>
+  <input type="text" id="idInput" placeholder="מזהה (למשל: abc123)" style="width: 100%; margin-bottom: 10px;" />
+  <textarea id="textInput" rows="4" placeholder="כתוב כאן את ההודעה שלך" style="width: 100%;"></textarea>
+  <br><br>
+  <button onclick="send()">שמור</button>
+
+  <h3>תצוגה מקדימה:</h3>
+  <img id="preview" style="border:1px solid #ccc; max-width: 100%;" />
+
+  <script>
+    async function send() {
+      const id = document.getElementById("idInput").value;
+      const text = document.getElementById("textInput").value;
+
+      const res = await fetch(`/api/message/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text })
+      });
+
+      const data = await res.json();
+      if (data.imageUrl) {
+        document.getElementById("preview").src = data.imageUrl + "?t=" + Date.now(); // עקיפת cache
+      }
+    }
+  </script>
+</body>
+</html>
