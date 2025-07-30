@@ -11,12 +11,10 @@ app.use('/images', express.static('images'));
 let storage = {};
 const DB_FILE = './storage.json';
 
-// טוען טקסטים אם יש
 if (fs.existsSync(DB_FILE)) {
   storage = JSON.parse(fs.readFileSync(DB_FILE));
 }
 
-// יצירת תמונה חדשה
 function generateImage(text, id) {
   const width = 600, height = 200;
   const canvas = createCanvas(width, height);
@@ -32,7 +30,6 @@ function generateImage(text, id) {
   fs.writeFileSync(`./images/${id}.png`, buffer);
 }
 
-// יצירת/עדכון הודעה
 app.post('/api/message/:id', (req, res) => {
   const id = req.params.id;
   const { text } = req.body;
@@ -44,7 +41,6 @@ app.post('/api/message/:id', (req, res) => {
   res.json({ success: true, imageUrl: `/images/${id}.png` });
 });
 
-// שליפת הטקסט הנוכחי
 app.get('/api/message/:id', (req, res) => {
   const id = req.params.id;
   res.json({ text: storage[id] || '' });
