@@ -20,14 +20,15 @@ By pointing an `<img>` tag in the email to a remote server, we bypass these rest
 
 ## 🔧 How It Works
 
-1. The email HTML contains a tag like:  
-   `<img src="https://yourserver.com/content?id=abc123" alt="Dynamic Text">`
+1. The email HTML contains an `<img>` tag like:  
+   `<img src="https://yourserver.com/content/abc123.png?v=1699999999999" alt="Dynamic Text" style="display:block; max-width:100%;" width="600" height="200">`
 
 2. On the server:
-   - The `content` route dynamically renders an image based on the requested `id`.
+   - `GET /content/:id.png` dynamically renders a PNG based on the requested `id`.
+   - Response includes no-cache headers to avoid email proxy caching.
    - The image is generated from plain text, using a clean, readable font.
 
-3. You can update the server-side text at any time.
+3. You can update the server-side text at any time (via POST below).
    - The recipient sees the updated version when re-opening the email.
 
 ## 🔐 Limitations & Considerations
@@ -42,6 +43,33 @@ By pointing an `<img>` tag in the email to a remote server, we bypass these rest
 
 - **Backend**: Node.js with image generation library (canvas)  
 - **Email HTML**: Plain HTML with inline `<img>` tag
+
+## 🔌 API
+
+- `POST /api/message/:id`
+  - Body: `{ "text": "Hello" }`
+  - Persists the text and returns a cache-busted image URL.
+  - Response: `{ "success": true, "imageUrl": "/content/:id.png?v=<timestamp>" }`
+
+- `GET /content/:id.png`
+  - Returns a PNG rendered from the latest stored text.
+  - Sends `Cache-Control: no-store` and related headers.
+
+## ✉️ Email HTML Example
+
+Embed this directly in your email HTML:
+
+```html
+<img
+  src="https://yourserver.com/content/abc123.png?v=1699999999999"
+  alt="Dynamic message"
+  style="display:block; outline:none; border:none; text-decoration:none; -ms-interpolation-mode:bicubic; max-width:100%;"
+  width="600"
+  height="200"
+/>
+```
+
+Tip: Update the `v` query param (timestamp/version) whenever you change the message.
 
 ## 📦 Example Use Cases
 
